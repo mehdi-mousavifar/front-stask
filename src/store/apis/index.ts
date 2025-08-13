@@ -24,6 +24,11 @@ export const api = createApi({
 
       providesTags: ["Task"],
     }),
+    getTasksByStatus: builder.query<Task[], string>({
+      query: (status) => `task/?status-tasks=${status}`,
+
+      providesTags: ["Task"],
+    }),
     createTask: builder.mutation<Task, TaskCreatePayload>({
       query: (body) => ({
         url: "task/",
@@ -83,6 +88,7 @@ export const api = createApi({
 export const {
   useGetTasksQuery,
   useGetTasksByProjectIdQuery,
+  useGetTasksByStatusQuery,
   useCreateTaskMutation,
   useUpdateTaskMutation,
   useDeleteTaskMutation,

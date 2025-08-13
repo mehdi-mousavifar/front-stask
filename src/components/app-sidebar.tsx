@@ -3,6 +3,7 @@ import * as React from "react";
 import { GalleryVerticalEnd, Minus, Plus } from "lucide-react";
 import { useRouter } from "next/navigation"; // Added router import
 import { SearchForm } from "@/components/search-form";
+import Link from "next/link";
 import {
   Collapsible,
   CollapsibleContent,
@@ -34,17 +35,21 @@ import {
 import { Separator } from "./ui/separator";
 import DashboardProjectModal from "./dashboard/dashoard-project-modal";
 import { useGetProjectsQuery } from "@/store/apis";
+import next from "next";
 
 // This is sample data.
-
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const router = useRouter(); // Initialize router
   const { data } = useGetProjectsQuery();
 
   const handleProjectSelect = (projectId: string) => {
-    // Navigate to project route
-    router.push(`dashboard/project-tasks/${projectId}`);
+    if (projectId == "all") {
+      router.replace("/dashboard");
+    } else {
+      // Navigate to project route
+      router.push(`dashboard/project-tasks/${projectId}`);
+    }
   };
 
   const projectItems = data?.map((project) => (
@@ -87,6 +92,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               <SelectContent className="bg-gray-100">
                 <SelectGroup>
                   <SelectLabel>Projects</SelectLabel>
+                  <SelectItem value="all">all Project</SelectItem>
                   {projectItems}
                 </SelectGroup>
               </SelectContent>
@@ -94,25 +100,41 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
             <Separator className="my-2" />
 
-            <Button
-              className="bg-yellow-200 hover:bg-yellow-300 text-yellow-900 hover:text-yellow-900 font-semibold mt-3"
-              variant="outline"
-            >
-              pending tasks
-            </Button>
+            <Link className="w-full" href={"/dashboard"}>
+              <Button
+                className="bg-orange-200 w-full hover:bg-orange-300 hover:cursor-pointer text-orange-900 hover:text-orange-900 font-semibold mt-3"
+                variant="outline"
+              >
+                all tasks
+              </Button>
+            </Link>
 
-            <Button
-              className="bg-sky-200 hover:bg-sky-300 text-sky-900 hover:text-sky-900 font-semibold "
-              variant="outline"
-            >
-              in progress tasks
-            </Button>
-            <Button
-              className="bg-green-200 hover:bg-green-300 text-green-900 hover:text-green-900 font-semibold mb-3"
-              variant="outline"
-            >
-              completed tasks
-            </Button>
+            <Link className="w-full" href={"/dashboard/status-tasks/pending"}>
+              <Button
+                className="w-full bg-yellow-200 hover:bg-yellow-300 hover:cursor-pointer text-yellow-900 hover:text-yellow-900 font-semibold mt-3"
+                variant="outline"
+              >
+                pending tasks
+              </Button>
+            </Link>
+
+            <Link href={"/dashboard/status-tasks/in_progress"}>
+              {" "}
+              <Button
+                className="bg-sky-200 w-full hover:bg-sky-300 hover:cursor-pointer text-sky-900 hover:text-sky-900 font-semibold "
+                variant="outline"
+              >
+                in progress tasks
+              </Button>
+            </Link>
+            <Link href={"/dashboard/status-tasks/completed"}>
+              <Button
+                className="bg-green-200 w-full hover:bg-green-300 hover:cursor-pointer text-green-900 hover:text-green-900 font-semibold mb-3"
+                variant="outline"
+              >
+                completed tasks
+              </Button>
+            </Link>
 
             <Separator className="my-2" />
           </SidebarMenu>
